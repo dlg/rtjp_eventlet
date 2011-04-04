@@ -136,6 +136,7 @@ class RTJPConnection(object):
             ev.send_exception(frame)
         else:
             ev.send(frame)
+        return frame #???
 
     def send_frame(self, name, args={}):
         if not self._sock:
