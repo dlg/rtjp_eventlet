@@ -98,11 +98,11 @@ class RTJPConnection(object):
                     data = self._sock.recv(1024)
                     self.logger.debug('RECV %s: %s', self, repr(data))
                 except Exception, e:
-                    self.logger.exception('%s Error while reading from self._sock')
+                    self.logger.exception('%s Error while reading from self._sock', e)
                     break
                 if not data:
                     self.logger.debug('no data, breaking...')
-                    break;
+                    break
                 buffer += data
                 while self.delimiter in buffer:
                     raw_frame, buffer = buffer.split(self.delimiter, 1)
@@ -118,9 +118,8 @@ class RTJPConnection(object):
             self._sock = None
             self._frame_queue.put(errors.ConnectionLost("Connection Lost"))
         except:
-            logger.exception('%s Unknown exception while reading from sock', self)
+            self.logger.exception('%s Unknown exception while reading from sock', self)
             self._loop = None
-            pass
 
     def recv_frame(self):
         ev = eventlet.event.Event()
