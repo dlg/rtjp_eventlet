@@ -78,6 +78,7 @@ class RTJPConnection(object):
     def _connect(self, host, port, ev):
         try:
             sock = eventlet.connect((host, port))
+            #sock.setblocking(0) # ??? dlg hack?
             self._addr = (host, port)
             self._make_connection(sock)
         except Exception, e:
@@ -154,7 +155,7 @@ class RTJPConnection(object):
         try:
             try:
                 self._send_lock.acquire()
-                self._sock.sendall(buffer)
+                self._sock.sendall(buffer, send_non_blocking=True)
                 self.logger.debug('SENT %s: %s', self, repr(buffer))
             except (Exception, AttributeError,), e:
                 self.logger.exception('%s Error sending payload %s', self, repr(buffer))
